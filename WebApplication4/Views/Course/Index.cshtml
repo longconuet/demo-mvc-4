@@ -1,0 +1,172 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    ViewBag.Title = "Course list";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p2>Course List</p2>
+
+<div style="margin-bottom: 20px">
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-5">
+            <input type="text" name="txtSearch" placeholder="Search!" id="search-course" class="txtSearch form-control" />
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-success" style="float: right" onclick="showAddModal();">Add</button>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Code</th>
+            <th scope="col">Student number</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+    </tbody>
+</table>
+
+<div class="footer">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination" id="load-pagination">
+        </ul>
+    </nav>
+</div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Course Form</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <div class="form-group overflow-hidden">
+                        @*<label for="Id">ID</label>*@
+                        <input type="text" class="form-control" id="Id" placeholder="Id" disabled="disabled" style="display:none;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Name</label>
+                        <input type="text" class="form-control" id="Name" placeholder="Name" name="name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Code">Code</label>
+                        <input type="text" class="form-control" id="Code" placeholder="Code" name="code" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MaxStudentNum">Student Number</label>
+                        <input type="number" class="form-control" id="MaxStudentNum" placeholder="Max Student Number" name="maxStudentNum" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAdd" onclick="return Add();">Save</button>
+                <button type="button" class="btn btn-primary" id="btnUpdate" style="display:none;" onclick="Update();">Update</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideModal();">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-students" tabindex="-1" role="dialog" aria-labelledby="studentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="studentModalLabel">Students of course</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form-student">
+                    <div style="margin-bottom: 20px">
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <input type="text" name="searchStudentOfCourse" placeholder="Search" class="search-student-course form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    @*<div>
+                        <input type="text" name="searchStudentOfCourse" placeholder="Search" class="search-student-course form-control" />
+                        <button type="button" class="btn btn-primary" id="search-student-course">Search</button>
+                    </div>*@
+                    <input hidden id="course-student-id" val="" />
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody-student">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideStudentModal();">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-enroll" tabindex="-1" role="dialog" aria-labelledby="enrollModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="enrollModalLabel">Enroll student to course</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form-enroll">
+                    <div style="margin-bottom: 20px">
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <input type="text" name="searchStudentEnroll" placeholder="Search" class="search-student-enroll form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    @*<div>
+                        <input type="text" name="searchStudentEnroll" placeholder="Search" class="search-student-enroll form-control" />
+                        <button type="button" class="btn btn-primary" id="search-student-enroll">Search</button>
+                    </div>*@
+                    <input hidden id="course-enroll-id" val="" />
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Age</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody-enroll">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAdd" onclick="enrollStudents();">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideEnrollModal();">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/course.js"></script>
+}
