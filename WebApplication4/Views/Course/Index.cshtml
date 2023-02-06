@@ -166,6 +166,50 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-update-enroll" tabindex="-1" role="dialog" aria-labelledby="updateEnrollModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="updateEnrollModalLabel">Update student enroll</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form-update-enroll">
+                    <div style="margin-bottom: 20px">
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <input type="text" name="searchStudentUpdateEnroll" placeholder="Search" class="search-student-update-enroll form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    @*<div>
+                    <input type="text" name="searchStudentEnroll" placeholder="Search" class="search-student-enroll form-control" />
+                    <button type="button" class="btn btn-primary" id="search-student-enroll">Search</button>
+                    </div>*@
+                    <input hidden id="course-update-enroll-id" val="" />
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Age</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody-enroll">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAdd" onclick="updateEnrollStudents();">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideUpdateEnrollModal();">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts{
     <script src="~/js/course.js"></script>

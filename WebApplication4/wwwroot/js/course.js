@@ -505,3 +505,50 @@ function removeStudent(courseId, studentId) {
     }
 
 }
+
+
+function showUpdateEnrollModal(courseId) {
+    loadStudentDataForUpdate(courseId);
+    $('#course-update-enroll-id').val(courseId);
+    $('#modal-update-enroll').modal('show');
+}
+
+function hideStudentModal() {
+    $(".search-student-update-enroll").val("");
+    $('#modal-update-enroll').modal('hide');
+}
+
+//Load Data function  
+function loadStudentDataForUpdate(courseId, keyword = "") {
+    $.ajax({
+        url: "/Course/StudentsOfCourse",
+        type: "GET",
+        data: { id: courseId, keyword: keyword },
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            if (result.status == 0) {
+                toastr.error(result.message, "Error");
+                $('.tbody-student').html("");
+                return false;
+            }
+
+            var data = result.data;
+            var html = '';
+            $.each(data, function (key, item) {
+                html += '<tr>';
+                html += '<td>' + (key + 1) + '</td>';
+                html += '<td>' + item.fullName + '</td>';
+                html += '<td>' + item.code + '</td>';
+                html += '<td>' + item.age + '</td>';
+                html += '<td><a href="#" onclick="removeStudent(' + courseId + ', ' + item.id + ')">Remove</a></td>';
+                html += '</tr>';
+            });
+            $('.tbody-student').html(html);
+        },
+        error: function (errormessage) {
+            $('.tbody-student').html("");
+            alert(errormessage.responseText);
+        }
+    });
+}
