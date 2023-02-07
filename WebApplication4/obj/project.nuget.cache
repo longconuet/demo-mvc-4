@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "m2wofKiBV+WfC71xV8rMIQmJH6WG+anRMhUhItOjfOBrQlDQ2jg7v1RVu646pbngpVwQgYdft5536hQbhRfohg==",
+  "dgSpecHash": "W4sVQiFK2MczOiPcooULes4sIGildZllRWiiA7wUkflRWvQXZN1H/zrG+1NwDe8TP8ys+Z60mUO+oyGa5UkUPg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Long Dell\\Desktop\\WebApplication4\\WebApplication4\\WebApplication4.csproj",
+  "projectFilePath": "C:\\Users\\Long Dell\\Desktop\\git\\demo-mvc-4\\WebApplication4\\WebApplication4.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Long Dell\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Long Dell\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

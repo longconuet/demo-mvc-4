@@ -9,7 +9,29 @@
 
 <p2>Course List</p2>
 
+
 <div style="margin-bottom: 20px">
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-success" style="float: right" onclick="showAddModal();">Add</button>
+        </div>
+    </div>
+</div>
+
+<div style="margin:0 auto;">
+    <table id="demoGrid" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Code</th>
+                <th scope="col">Student number</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@*<div style="margin-bottom: 20px">
     <div class="row">
         <div class="col-md-6"></div>
         <div class="col-md-5">
@@ -40,7 +62,7 @@
         <ul class="pagination" id="load-pagination">
         </ul>
     </nav>
-</div>
+</div>*@
 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -167,7 +189,7 @@
 </div>
 
 <div class="modal fade" id="modal-update-enroll" tabindex="-1" role="dialog" aria-labelledby="updateEnrollModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="updateEnrollModalLabel">Update student enroll</h4>
@@ -187,23 +209,25 @@
                     <button type="button" class="btn btn-primary" id="search-student-enroll">Search</button>
                     </div>*@
                     <input hidden id="course-update-enroll-id" val="" />
+                    <input hidden id="checked-student-ids" val="" />
 
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col"><input class="form-check-input" type="checkbox" id="check-all-enroll" name="checkAllEnroll" /></th>
+                                <th scope="col">No.</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Code</th>
                                 <th scope="col">Age</th>
                             </tr>
                         </thead>
-                        <tbody class="tbody-enroll">
+                        <tbody class="tbody-update-enroll">
                         </tbody>
                     </table>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnAdd" onclick="updateEnrollStudents();">Save</button>
+                <button type="button" class="btn btn-primary" id="btnAdd" onclick="updateEnrollStudents();">Update</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal" onclick="hideUpdateEnrollModal();">Close</button>
             </div>
         </div>

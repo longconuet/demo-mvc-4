@@ -1,6 +1,47 @@
 ﻿//Load Data in Table when documents is ready  
 $(document).ready(function () {
-    loadData();
+    var t = $("#demoGrid").DataTable({
+        "processing": true, // for show progress bar  
+        "serverSide": true, // for process server side  
+        "filter": true, // this is for disable filter (search box)  
+        "orderMulti": false, // for disable multiple column at once  
+        "pageLength": 2,
+        "lengthMenu": [2, 5, 10, 25],
+        "searchDelay": 500,
+
+        "ajax": {
+            "url": "/Course/LoadData",
+            "type": "POST",
+            "datatype": "json"
+        },
+
+        "columnDefs":
+            [{
+                "targets": [2],
+                "searchable": false,
+                "orderable": false
+            },
+            {
+                "targets": [3],
+                "searchable": false,
+                "orderable": false
+            }],
+
+        "columns": [
+            { "data": "name", "name": "name", "autoWidth": true },
+            { "data": "code", "name": "code", "autoWidth": true },
+            {
+                "render": function (data, type, full, meta) {
+                    return '<td><a href="#" onclick="showUpdateEnrollModal(' + full.id + ')">' + full.currentStudentNum + '/' + full.maxStudentNum + '</a></td>';
+                }
+            },
+            {
+                "render": function (data, type, full, meta) {
+                    return '<td><a href="#" onclick="return getbyID(' + full.id + ')">Edit</a> | <a href="#" onclick="Delele(' + full.id + ')">Delete</a></td>';
+                }
+            },
+        ],
+    });
 
     var validator = $("#form").validate({
         rules: {
@@ -52,7 +93,13 @@ $(document).ready(function () {
         }
     });
 
+    initCheckAllFunc();
 });
+
+function reloadTable() {
+    var currentPage = $("#demoGrid").DataTable().page();
+    $("#demoGrid").DataTable().page(currentPage).draw('page');
+}
 
 //Load Data function  
 function loadData(txtSearch = "") {
@@ -69,8 +116,8 @@ function loadData(txtSearch = "") {
                 html += '<td>' + (key + 1) + '</td>';
                 html += '<td>' + item.name + '</td>';
                 html += '<td>' + item.code + '</td>';
-                html += '<td><a href="#" onclick="showStudentModal(' + item.id + ')">' + item.currentStudentNum + '/' + item.maxStudentNum + '</a></td>';
-                html += '<td><a href="#" onclick="return getbyID(' + item.id + ')">Edit</a> | <a href="#" onclick="Delele(' + item.id + ')">Delete</a>| <a href="#" onclick="showEnrollModal(' + item.id + ')">Enroll</a></td>';
+                html += '<td><a href="#" onclick="showUpdateEnrollModal(' + item.id + ')">' + item.currentStudentNum + '/' + item.maxStudentNum + '</a></td>';
+                html += '<td><a href="#" onclick="return getbyID(' + item.id + ')">Edit</a> | <a href="#" onclick="Delele(' + item.id + ')">Delete</a></td>';
                 html += '</tr>';
             });
             $('.tbody').html(html);
@@ -140,7 +187,7 @@ function Add() {
                 }
 
                 toastr.success(result.message, 'Success');
-                loadData();
+                reloadTable();
                 $('#myModal').modal('hide');
             },
             error: function (errormessage) {
@@ -238,7 +285,7 @@ function Delele(Id) {
                 }
 
                 toastr.success(result.message, 'Success');
-                loadData();
+                reloadTable();
             },
             error: function (errormessage) {
                 alert(errormessage.responseText);
@@ -513,15 +560,30 @@ function showUpdateEnrollModal(courseId) {
     $('#modal-update-enroll').modal('show');
 }
 
-function hideStudentModal() {
+function hideUpdateEnrollModal() {
     $(".search-student-update-enroll").val("");
     $('#modal-update-enroll').modal('hide');
 }
 
+function initCheckAllFunc() {
+    $(document).on('change', '#check-all-enroll', function () {
+        $('#modal-update-enroll input:checkbox').not(this).prop('checked', this.checked);
+    });
+
+    $(document).on('change', '.check-item-enroll', function () {
+        if ($('.check-item-enroll:checked').length == $('.check-item-enroll').length) {
+            $('#check-all-enroll').prop('checked', true);
+        } else {
+            $('#check-all-enroll').prop('checked', false);
+        }
+    });
+}
+
+
 //Load Data function  
 function loadStudentDataForUpdate(courseId, keyword = "") {
     $.ajax({
-        url: "/Course/StudentsOfCourse",
+        url: "/Course/AllStudentsOfCourse",
         type: "GET",
         data: { id: courseId, keyword: keyword },
         contentType: "application/json;charset=utf-8",
@@ -529,25 +591,80 @@ function loadStudentDataForUpdate(courseId, keyword = "") {
         success: function (result) {
             if (result.status == 0) {
                 toastr.error(result.message, "Error");
-                $('.tbody-student').html("");
+                $('.tbody-update-enroll').html("");
                 return false;
             }
 
             var data = result.data;
             var html = '';
             $.each(data, function (key, item) {
+                var checked = item.isEnrolled == 1 ? "checked" : "";
+
                 html += '<tr>';
+                html += '<td><input class="form-check-input check-item-enroll" type="checkbox" name="updateEnrroll[]" value="' + item.id + '" id="update-enroll-' + item.id + '" ' + checked + '></td>';
                 html += '<td>' + (key + 1) + '</td>';
                 html += '<td>' + item.fullName + '</td>';
                 html += '<td>' + item.code + '</td>';
                 html += '<td>' + item.age + '</td>';
-                html += '<td><a href="#" onclick="removeStudent(' + courseId + ', ' + item.id + ')">Remove</a></td>';
+                //html += '<td><a href="#" onclick="removeStudent(' + courseId + ', ' + item.id + ')">Remove</a></td>';
                 html += '</tr>';
             });
-            $('.tbody-student').html(html);
+            $('.tbody-update-enroll').html(html);
         },
         error: function (errormessage) {
             $('.tbody-student').html("");
+            alert(errormessage.responseText);
+        }
+    });
+}
+
+$("body").on("keyup", ".search-student-update-enroll", function (event) {
+    event.preventDefault();
+
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == '13') {
+        event.preventDefault();
+
+        //load event pagination
+        loadStudentDataForUpdate(parseInt($('#course-update-enroll-id').val()), $(".search-student-update-enroll").val());
+    }
+});
+
+function updateEnrollStudents() {
+    var enrolledStudentIds = [];
+    $('#modal-update-enroll input.check-item-enroll:checked').each(function () {
+        enrolledStudentIds.push(parseInt($(this).val()));
+    });
+
+    var obj = {
+        CourseId: parseInt($('#course-update-enroll-id').val()),
+        EnrolledStudentIds: enrolledStudentIds
+    };
+
+    $.ajax({
+        url: "/Course/UpdateEnrolls",
+        data: JSON.stringify(obj),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        async: true,
+        processData: false,
+        statusCode: {
+            400: function (responseObject, textStatus, jqXHR) {
+                toastr.error(responseObject, "Bad request");
+            }
+        },
+        success: function (result) {
+            if (result.status == 0) {
+                toastr.error(result.message, "Error");
+                return false;
+            }
+
+            toastr.success(result.message, 'Success');
+            reloadTable();
+            hideUpdateEnrollModal();
+        },
+        error: function (errormessage) {
             alert(errormessage.responseText);
         }
     });

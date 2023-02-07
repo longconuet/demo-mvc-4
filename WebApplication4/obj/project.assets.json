@@ -3956,11 +3956,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Long Dell\\Desktop\\WebApplication4\\WebApplication4\\WebApplication4.csproj",
+      "projectUniqueName": "C:\\Users\\Long Dell\\Desktop\\git\\demo-mvc-4\\WebApplication4\\WebApplication4.csproj",
       "projectName": "WebApplication4",
-      "projectPath": "C:\\Users\\Long Dell\\Desktop\\WebApplication4\\WebApplication4\\WebApplication4.csproj",
+      "projectPath": "C:\\Users\\Long Dell\\Desktop\\git\\demo-mvc-4\\WebApplication4\\WebApplication4.csproj",
       "packagesPath": "C:\\Users\\Long Dell\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Long Dell\\Desktop\\WebApplication4\\WebApplication4\\obj\\",
+      "outputPath": "C:\\Users\\Long Dell\\Desktop\\git\\demo-mvc-4\\WebApplication4\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Long Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",

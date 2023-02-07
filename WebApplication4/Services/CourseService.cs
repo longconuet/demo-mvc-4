@@ -14,6 +14,7 @@ namespace WebApplication4.Services
         ServiceResponse Delete(int id);
         ServiceResponse EnrollStudent(EnrollStudentToCourseRequest request);
         ServiceResponse RemoveStudent(RemoveStudentFromCourseRequest request);
+        ServiceResponse UpdateEnrolls(UpdateEnrollsRequest request);
     }
 
     public class CourseService : ICourseService
@@ -247,6 +248,79 @@ namespace WebApplication4.Services
                 {
                     Status = 0,
                     Message = "Remove student from course failed"
+                };
+            }
+        }
+
+        public ServiceResponse UpdateEnrolls(UpdateEnrollsRequest request)
+        {
+            try
+            {
+                using var db = new StudentDbContext();
+                List<int> insertStudentIds = new();
+                List<int> deleteStudentIds = new();
+
+                var course = db.Courses.FirstOrDefault(x => x.Id == request.CourseId && x.IsDeleted == 0);
+                if (course == null)
+                {
+                    return new ServiceResponse
+                    {
+                        Status = 0,
+                        Message = "Course does not exist"
+                    };
+                }
+
+                var enrolledStudentIds = db.Students.Where(x => x.IsDeleted == 0 && request.EnrolledStudentIds.Contains(x.Id))
+                    .Select(x => x.Id)
+                    .ToList();
+
+                var oldEnrolledStudents = db.CourseStudents.Where(x => x.CourseId == request.CourseId && x.IsDeleted == 0).ToList();
+                var oldEnrolledStudentIds = oldEnrolledStudents.Select(x => x.StudentId).ToList();
+                if (enrolledStudentIds.Count > course.MaxStudentNum)
+                {
+                    return new ServiceResponse
+                    {
+                        Status = 0,
+                        Message = "Course is full"
+                    };
+                }
+
+                // insert
+                insertStudentIds = enrolledStudentIds.Except(oldEnrolledStudentIds).ToList();
+                if (insertStudentIds.Any())
+                {
+                    var insertCourseStudents = insertStudentIds.Select(x => new CourseStudent
+                    {
+                        CourseId = request.CourseId,
+                        StudentId = x
+                    }).ToList();
+
+                    db.CourseStudents.AddRange(insertCourseStudents);
+                }
+
+                // delete
+                deleteStudentIds = oldEnrolledStudentIds.Except(enrolledStudentIds).ToList();
+                if (deleteStudentIds.Any())
+                {
+                    var deleteCourseStudents = oldEnrolledStudents.Where(x => deleteStudentIds.Contains(x.StudentId)).ToList();
+                    deleteCourseStudents.ForEach(x => x.IsDeleted = 1);
+
+                    db.CourseStudents.UpdateRange(deleteCourseStudents);
+                }
+                
+                db.SaveChanges();
+
+                return new ServiceResponse
+                {
+                    Status = 1
+                };
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse
+                {
+                    Status = 0,
+                    Message = "Update enrolls failed"
                 };
             }
         }
