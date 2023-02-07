@@ -66,7 +66,6 @@ namespace WebApplication4.Controllers
                     Code = student.Code,
                     Age = student.Age,
                     Address = student.Address,
-                    Courses = courseStudents.Where(x => x.cs.StudentId == student.Id).Select(x => x.c.Name).ToList()
                 });
             }
 
@@ -186,7 +185,7 @@ namespace WebApplication4.Controllers
                             Code = student.Code,
                             Age = student.Age,
                             Address = student.Address,
-                            Courses = courseStudents.Where(x => x.cs.StudentId == student.Id).Select(x => x.c.Name).ToList()
+                            Courses = courseStudents.Where(x => x.cs.StudentId == student.Id).Select(x => new SimpleCourseModel { Id = x.c.Id, Name = x.c.Name }).ToList()
                         });
                     }
 
@@ -319,6 +318,33 @@ namespace WebApplication4.Controllers
             {
                 Status = 1,
                 Message = "Delete student successfully"
+            };
+        }
+
+        public ActionResult<ResponseModel<CourseModel>> GetCourseInfo(int id)
+        {
+            using var db = new StudentDbContext();
+
+            var course = db.Courses.FirstOrDefault(x => x.Id == id && x.IsDeleted == 0);
+            if (course == null)
+            {
+                return new ResponseModel<CourseModel>
+                {
+                    Status = 0,
+                    Message = "Course does not exist"
+                };
+            }
+
+            return new ResponseModel<CourseModel>
+            {
+                Status = 1,
+                Data = new CourseModel
+                {
+                    Id = id,
+                    Name = course.Name,
+                    Code = course.Code,
+                    MaxStudentNum = course.MaxStudentNum
+                }
             };
         }
     }

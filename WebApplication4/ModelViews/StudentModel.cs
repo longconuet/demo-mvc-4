@@ -7,6 +7,6 @@
         public int Age { get; set; }
         public string Code { get; set; } = "";
         public string? Address { get; set; }
-        public List<string> Courses { get; set; } = new List<string>();
+        public List<SimpleCourseModel> Courses { get; set; } = new List<SimpleCourseModel>();
     }
 }

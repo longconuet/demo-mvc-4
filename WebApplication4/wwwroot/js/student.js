@@ -46,7 +46,7 @@ $(document).ready(function () {
                 data: null, render: function (data, type, row) {
                     var html = '';
                     $.each(row.courses, function (key, item) {
-                        html += "<div>" + item + "</div>";
+                        html += "<div><a href='#' onclick='return getCourseInfo(" + item.id + ")'>" + item.name + "</a></div>";
                     });
                     return html;
                 }
@@ -360,6 +360,39 @@ function Delele(Id) {
     }
 }  
 
+
+function getCourseInfo(id) {
+    $.ajax({
+        url: "/Student/GetCourseInfo/" + id,
+        typr: "GET",
+        contentType: "application/json;charset=UTF-8",
+        dataType: "json",
+        success: function (result) {
+            if (result.status == 1) {
+                $('#course-name').val(result.data.name);
+                $('#course-code').val(result.data.code);
+                $('#course-max-student-num').val(result.data.maxStudentNum);
+                $('#courseModal').modal('show');
+            }
+            else {
+                toastr.error(result.message, "Error");
+            }
+        },
+        error: function (errormessage) {
+            alert(errormessage.responseText);
+        }
+    });
+    return false;
+}
+
+function showCourseModal() {
+    clearTextBox();
+    $('#courseModal').modal('show');
+}
+
+function hideCourseModal() {
+    $('#courseModal').modal('hide');
+}
 
 //Function for clearing the textboxes  
 function clearTextBox() {
